@@ -9,3 +9,6 @@ class Config:
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'g00d_key_for_token_generation')
     UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', 'uploads')
     FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+
+    GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+    GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
