@@ -8,8 +8,8 @@ from data import data_bp
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, resources={r"/*": {"origins": os.getenv('FRONTEND_URL', 'http://localhost:5173')}})
     app.config.from_object(Config)
+    CORS(app, resources={r"/*": {"origins": app.config['FRONTEND_URL']}})
 
     db.init_app(app)
     jwt.init_app(app)
