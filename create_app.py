@@ -17,4 +17,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(data_bp)
 
+    uploads_dir = os.path.join(app.root_path, app.config.get('UPLOAD_FOLDER', 'uploads'))
+    os.makedirs(uploads_dir, exist_ok=True)
+    
     return app
