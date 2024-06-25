@@ -42,6 +42,7 @@ def upload_file():
     return jsonify({"message": "File uploaded and processed successfully"})
 
 
+# to get all the columns, rows and pagination info for the user
 @data_bp.route("/data", methods=["GET", "POST"])
 @jwt_required()
 def get_data():
