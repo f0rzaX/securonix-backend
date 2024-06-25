@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
 from extensions import db
 from flask_jwt_extended import create_access_token
+from flask import current_app as app
+import requests
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -32,3 +34,32 @@ def signup():
     db.session.commit()
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token), 201
+
+
+# for Google OAuth
+@auth_bp.route("/authorize", methods=["POST"])
+def authorize():
+    token = request.json.get('token')
+    if not token:
+        return jsonify({"error": "Missing token"}), 400
+
+    # use the token to get user (from Google)
+    try:
+        resp = requests.get(
+            app.config['GOOGLE_USER_INFO'],
+            params={'alt': 'json'},
+            headers={'Authorization': f'Bearer {token}'}
+        )
+        user_info = resp.json()
+        email = user_info['email']
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        user = User(email=email)
+        db.session.add(user)
+        db.session.commit()
+
+    access_token = create_access_token(identity=email)
+    return jsonify(access_token=access_token), 200
