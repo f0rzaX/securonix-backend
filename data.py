@@ -50,6 +50,8 @@ def get_data():
     current_page = request_data.get("page", 1)
     search = request_data.get("query", "")
     filters = request_data.get("filters", {})
+    sort_key = request_data.get("sortKey", None)
+    sort_direction = request_data.get("sortDirection", "ascending")
 
     email = get_jwt_identity()
 
@@ -107,6 +109,10 @@ def get_data():
             search_query = all_columns.str.contains(search)
 
         df = df[search_query]
+
+    # apply sorting
+    if sort_key:
+        df = df.sort_values(by=sort_key, ascending=(sort_direction == "ascending"))
 
     # replace NaN with None
     df = df.replace({np.nan: None})
